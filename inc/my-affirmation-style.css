@@ -1,0 +1,43 @@
+.my-affirmation-notice {
+    color: red;
+    font-family: "メイリオ" ;
+    font-size: large;
+    font-weight: bold;
+    margin-left: 5px; 
+}
+.input-field {
+    padding-right: 10px;
+}
+.textarea-affirmation {
+    width:100%; 
+    height:80px;
+    margin-right: 10px!important;
+    border: solid 5px ;
+    font-family: "メイリオ" ;
+    font-size: large;
+}
+.button-common {
+    border-radius:10px 10px 10px 10px!important;
+    width: 80px;
+}
+
+.button-common:hover {
+    background-color:rebeccapurple!important;
+}
+
+a.button-menu {
+    color: rgb(236, 17, 104)!important;
+    font-size: 12px;
+}
+
+.affirmation-table-color-style-header {
+  color: white;
+  background-color: rgb(137, 133, 241);
+}
+.affirmation-table-color-style {
+    background-color: white;
+}
+div.submit{
+    margin-top: 3px!important;
+    padding-top: 0;
+}
