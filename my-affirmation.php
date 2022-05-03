@@ -16,24 +16,23 @@
  * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl-3.0
  */
-
-require_once dirname(__FILE__) . '/inc/model.php';
-require_once dirname(__FILE__) . '/inc/utility.php';
-require_once dirname(__FILE__) . '/vendor/autoload.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'const.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'model.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'utility.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
 function my_affirmation_enqueue_styles()
 {
-    $css_filename = "inc/my-affirmation-style.css";
-    $script_filename = "inc/my-affirmation.js";
-
     wp_enqueue_style(
-        'my-affirmation-style',
-        plugins_url($css_filename, __FILE__)
+      MY_AFFIRMATION_STYLE_NAME_ONLY,
+      CSS_FILENAME_URI,
+      array('style'),
+		  filemtime(CSS_FILENAME_FULL_PATH)
     );
 
     wp_enqueue_script(
-        'my-affirmation',
-        plugins_url($script_filename, __FILE__)
+      PLUGIN_NAME,
+        plugins_url(SCRIPT_FILENAME_FROM_INC, __FILE__)
     );
 }
 add_action('admin_enqueue_scripts', 'my_affirmation_enqueue_styles');
