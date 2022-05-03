@@ -26,7 +26,7 @@ function my_affirmation_enqueue_styles()
     wp_enqueue_style(
       MY_AFFIRMATION_STYLE_NAME_ONLY,
       CSS_FILENAME_URI,
-      array('style'),
+      array(),
 		  filemtime(CSS_FILENAME_FULL_PATH)
     );
 
