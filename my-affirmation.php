@@ -222,7 +222,7 @@ function my_affirmation_options()
               value="<?php echo esc_html__('削除', 'delete'); ?>"/>
         <?php if ($show_add_link): ?>
           <span>
-            <a class="button-menu " href="<?php echo esc_html__('?page=my_affirmation&mode=add'); ?>">新しく作る</a>
+            <a class="button-menu " href="<?php echo esc_html__('?page=my_affirmation&mode=add'); ?>">新しくアファーションを作る</a>
           </span>
         <?php endif; ?>
         </div>
