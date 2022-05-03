@@ -178,7 +178,7 @@ function my_affirmation_options()
         $message = "削除しました！";
     }
 ?>
- <div>
+ <div class="affirmation-input-are">
    <div class="header">
     <h1>アファメーションカード</h1>
    </div>
@@ -220,11 +220,13 @@ function my_affirmation_options()
               name="delete" 
               type="submit" 
               value="<?php echo esc_html__('削除', 'delete'); ?>"/>
-        <?php if ($show_add_link): ?>
-          <span>
-            <a class="button-menu " href="<?php echo esc_html__('?page=my_affirmation&mode=add'); ?>">新しくアファーションを作る</a>
-          </span>
-        <?php endif; ?>
+        </div>
+        <div>
+          <?php if ($show_add_link): ?>
+            <span>
+              <a class="button-menu " href="<?php echo esc_html__('?page=my_affirmation&mode=add'); ?>">新しくアファーションを作る</a>
+            </span>
+          <?php endif; ?>
         </div>
         <div class="affirmation-table-area">
           <?php if (!empty($affirmations)): ?>

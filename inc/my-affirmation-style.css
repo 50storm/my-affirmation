@@ -1,3 +1,6 @@
+.affirmation-input-are {
+    margin-right: 10px;
+}
 .my-affirmation-notice-area {
     padding-right: 1px;
 }
@@ -14,6 +17,7 @@
     background: linear-gradient(#e30ce3, #f27ca7);
     text-shadow: 1px 2px 3px gray;
     height: 100%;
+    margin-right: 5px;
 }
 .message-area {
     margin-right: 630px;
@@ -27,13 +31,9 @@
     padding: 5px;
     padding-left: 0!important;
 }
-.input-field {
-    padding-right: 10px;
-}
 .textarea-affirmation {
     width:100%; 
     height:80px;
-    margin-right: 10px!important;
     border: solid 5px ;
     font-family: "メイリオ" ;
     font-size: large;
@@ -79,17 +79,18 @@ a.button-menu {
     padding-left: 10px!important;
     padding-right: 10px!important;
     border: 1px #12dc58 solid;
+    width:80%;
 }
 .affirmation-table-menu {
-    padding-left: 5px!important;
-    padding-right: 5px!important;
     font-size: 5px!important;
     border: 1px #12dc58 solid;
     border-left: 0!important;
+    width:20%;
+    text-align: center;
 }
 div.submit{
     margin-top: 4px!important;
-    margin-bottom: 0px!important;
+    margin-bottom: 5px!important;
     padding-top: 0;
-    padding-bottom: 10px;
+    padding-bottom: 0px;
 }
