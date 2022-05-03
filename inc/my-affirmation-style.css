@@ -1,9 +1,31 @@
+.my-affirmation-notice-area {
+    padding-right: 1px;
+}
 .my-affirmation-notice {
     color: red;
     font-family: "メイリオ" ;
     font-size: large;
     font-weight: bold;
-    margin-left: 5px; 
+    margin-left: 5px;
+    color: white;
+    padding: 5px 10px;
+    border-radius:10px 10px 10px 10px;
+    margin-left: 0px;
+    background: linear-gradient(#e30ce3, #f27ca7);
+    text-shadow: 1px 2px 3px gray;
+    height: 30px;
+}
+.message-area {
+    margin-right: 630px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.message-text{
+    font-family: "メイリオ";
+    font-size: 20px;
+    color: #0099FF;
+    padding: 5px;
+    padding-left: 0!important;
 }
 .input-field {
     padding-right: 10px;
@@ -19,25 +41,55 @@
 .button-common {
     border-radius:10px 10px 10px 10px!important;
     width: 80px;
+    background: linear-gradient(#0c25e3, #2566f2)!important;
+    font-family: "メイリオ"!important; ;
+    font-size: 15px!important;
 }
-
 .button-common:hover {
     background-color:rebeccapurple!important;
 }
-
 a.button-menu {
     color: rgb(236, 17, 104)!important;
     font-size: 12px;
 }
-
+.affirmation-table-area {
+    margin-top: 0px;
+}
+.affirmation-table {
+    border-spacing: 0;
+}
 .affirmation-table-color-style-header {
+  height: 40px;
   color: white;
   background-color: rgb(137, 133, 241);
+  font-family: "メイリオ"!important; ;
+  font-size: 15px!important;
+  background: linear-gradient( #129628, #49e30c)!important;
 }
 .affirmation-table-color-style {
     background-color: white;
+    font-family: "メイリオ"!important; ;
+    font-size: 13px!important;
+}
+
+.affirmation-table-tr {
+    height: 30px;
+}
+.affirmation-table-td{
+    padding-left: 10px!important;
+    padding-right: 10px!important;
+    border: 1px #12dc58 solid;
+}
+.affirmation-table-menu {
+    padding-left: 5px!important;
+    padding-right: 5px!important;
+    font-size: 5px!important;
+    border: 1px #12dc58 solid;
+    border-left: 0!important;
 }
 div.submit{
-    margin-top: 3px!important;
+    margin-top: 4px!important;
+    margin-bottom: 0px!important;
     padding-top: 0;
+    padding-bottom: 10px;
 }

@@ -60,9 +60,11 @@ function show_affirmation_admin_notice()
 {
     $my_affirmation = Affimation::select_one_affirmation_randomly();
     if (!empty($my_affirmation)) {
+        echo '<div class="my-affirmation-notice-area">';
         echo '<p id="affirmation" class="my-affirmation-notice">';
         echo esc_html($my_affirmation[0]['affirmation']);
         echo '</p>';
+        echo '</div>';
     }
 }
 add_action('admin_notices', 'show_affirmation_admin_notice');
@@ -125,8 +127,8 @@ function my_affirmation_options()
           // update
           $update_data['id'] = $_POST['id'];
           $update_data['affirmation'] = $_POST['affirmation'];
-
           Affimation::update($update_data);
+          $affirmation_updated = true;
           $affirmation = $_POST['affirmation'];
           $css_class['add']['display'] = 'display-none';
           $css_class['update']['display'] = 'display-block';
@@ -170,20 +172,22 @@ function my_affirmation_options()
 
     $message = "";
     if ($affirmation_saved) {
-        $message = "登録しました";
+        $message = "作成しました！";
     } elseif ($affirmation_updated) {
-        $message = "変更しました";
+        $message = "修正しました！";
     } elseif ($affirmation_deleted) {
-        $message = "削除しました";
+        $message = "削除しました！";
     }
 ?>
  <div>
    <div class="header">
-    <h1>アファメーション設定画面</h1>
+    <h1>アファメーションカード</h1>
    </div>
-   <div id="message" class="message"  >
-    <p><strong><?php echo $message; ?></strong></p>
+   <?php if(!empty($message)): ?>
+   <div id="message" class="message-area">
+    <span class="message-text"><?php echo $message; ?></span>
    </div><!-- message -->
+   <?php endif; ?>
    <div class="form">
     <form id="affirmationform" method="post" action="">
     <div>
@@ -205,7 +209,7 @@ function my_affirmation_options()
               id="insertButton" 
               name="insert" 
               type="submit" 
-              value="<?php echo esc_html__('登録', 'insert'); ?>"
+              value="<?php echo esc_html__('作成', 'insert'); ?>"
         />  
         <input class="button-primary button-common submit <?php echo $css_class['update']['display']; ?>" 
               id="updateButton" 
@@ -219,34 +223,28 @@ function my_affirmation_options()
               value="<?php echo esc_html__('削除', 'delete'); ?>"/>
         <?php if ($show_add_link): ?>
           <span>
-            <a class="button-menu " href="<?php echo esc_html__('?page=my_affirmation&mode=add'); ?>">登録モードに切り替え</a>
+            <a class="button-menu " href="<?php echo esc_html__('?page=my_affirmation&mode=add'); ?>">新しく作る</a>
           </span>
         <?php endif; ?>
         </div>
-        <div>
+        <div class="affirmation-table-area">
           <?php if (!empty($affirmations)): ?>
-          <table>
+          <table class="affirmation-table">
             <tbody>
               <tr class="affirmation-border affirmation-table-color-style-header">
-                <th class="affirmation-border">
-                  No.
-                </th>
                 <th class="affirmation-border" colspan="2">
-                  アファメーション
+                  アファメーションカード一覧
                 </th>
               </tr>
               <?php
                 foreach ($affirmations as $val):
                   $url_show = "?page=my_affirmation&mode=show&id=". $val['id']; ?>
-              <tr class="affirmation-border affirmation-table-color-style" >
-                <td class="affirmation-border" >
-                  <?php echo esc_html__($val['id']); ?>
-                </td>
-                <td class="affirmation-border">
+              <tr class="affirmation-border affirmation-table-color-style affirmation-table-tr" >
+                <td class="affirmation-border affirmation-table-td">
                   <?php echo esc_html__($val['affirmation']); ?>
                 </td>
-                <td class="affirmation-border">
-                  <a class="button-menu" href="<?php echo esc_html__($url_show); ?>">編集/削除をする</a>
+                <td class="affirmation-border affirmation-table-menu">
+                  <a class="button-menu " href="<?php echo esc_html__($url_show); ?>">編集/削除</a>
                 </td>
               </tr>
               <?php
