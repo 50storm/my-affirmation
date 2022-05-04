@@ -5,8 +5,16 @@
  */
 class Affimation
 {
+    /**
+     * Table Name
+     */
     public const AFFIRMATION_TABLE_NAME = 'affirmations';
 
+    /**
+     * activate_create_table function
+     *
+     * @return (int|false)
+     */
     public static function activate_create_table()
     {
         global $wpdb;
@@ -40,7 +48,7 @@ class Affimation
      * insert_affirmation function
      *
      * @param string $affirmation
-     * @return int
+     * @return (int|false)
      */
     public static function insert_affirmation($affirmation = "")
     {
@@ -61,7 +69,7 @@ class Affimation
     /**
      * select_one_affirmation_randomly function
      *
-     * @return void
+     * @return array
      */
     public static function select_one_affirmation_randomly()
     {
@@ -75,7 +83,7 @@ class Affimation
      * select_one_affirmation_by_id function
      *
      * @param integer $id
-     * @return void
+     * @return array[0]
      */
     public static function select_one_affirmation_by_id($id=0)
     {
@@ -91,7 +99,7 @@ class Affimation
     /**
      * select_all function
      *
-     * @return void
+     * @return array
      */
     public static function select_all()
     {
@@ -105,7 +113,7 @@ class Affimation
      * update function
      *
      * @param array $parms
-     * @return void
+     * @return (int|false)
      */
     public static function update($parms = [])
     {
@@ -128,7 +136,7 @@ class Affimation
      * delete function
      *
      * @param [type] $id
-     * @return void
+     * @return  (int|false)
      */
     public static function delete($id=null)
     {
