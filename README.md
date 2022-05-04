@@ -10,5 +10,5 @@
 <img width="1440" alt="Affirmation表示例" src="https://user-images.githubusercontent.com/4657310/166432327-f80f9bf8-6c89-4dce-9b16-d676ad3efb5e.png">
 
 ## 設定方法
-Wordpressのpluginsフォルダにアップロードして有効化。  
+Wordpressのpluginsフォルダにアップロードしてwordpressのプラグイン画面で有効化。  
 設定のメニューにアファメーション設定が追加されるので設定メニューを開いて入力してください。
