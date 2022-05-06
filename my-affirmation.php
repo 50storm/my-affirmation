@@ -25,14 +25,14 @@ function my_affirmation_enqueue_styles()
 {
     wp_enqueue_style(
       MY_AFFIRMATION_STYLE_NAME_ONLY,
-      CSS_FILENAME_URI,
+      MY_AFFIRMATION_CSS_FILENAME_URI,
       array(),
-		  filemtime(CSS_FILENAME_FULL_PATH)
+		  filemtime(MY_AFFIRMATION_CSS_FILENAME_FULL_PATH)
     );
 
     wp_enqueue_script(
-      PLUGIN_NAME,
-        plugins_url(SCRIPT_FILENAME_FROM_INC, __FILE__)
+      MY_AFFIRMATION_PLUGIN_NAME,
+        plugins_url(MY_AFFIRMATION_SCRIPT_FILENAME_FROM_INC, __FILE__)
     );
 }
 add_action('admin_enqueue_scripts', 'my_affirmation_enqueue_styles');
