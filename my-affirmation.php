@@ -20,6 +20,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'model.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'utility.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+use MyAffirmationUtility\Debug;
 
 function my_affirmation_enqueue_styles()
 {
@@ -103,6 +104,7 @@ add_action('admin_menu', 'affirmation_menu');
  */
 function my_affirmation_options()
 {
+    // Debug::debug_vars("test");
     $affirmation_saved = false;
     $affirmation_updated = false;
     $affirmation_deleted = false;
