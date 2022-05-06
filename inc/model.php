@@ -1,5 +1,5 @@
 <?php
-
+namespace MyAffirmationModel;
 /**
  * Affimation class
  */

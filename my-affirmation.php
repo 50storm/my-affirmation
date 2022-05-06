@@ -21,6 +21,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'utility.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 use MyAffirmationUtility\Debug;
+use MyAffirmationModel\Affimation;
 
 function my_affirmation_enqueue_styles()
 {
