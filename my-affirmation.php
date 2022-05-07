@@ -257,7 +257,7 @@ function my_affirmation_options()
    </div>
    <?php if(!empty($message)): ?>
    <div id="message" class="message-area">
-    <span class="message-text"><?php echo $message; ?></span>
+    <span class="message-text"><?php echo esc_html($message); ?></span>
    </div><!-- message -->
    <?php endif; ?>
    <div class="form">
@@ -270,34 +270,34 @@ function my_affirmation_options()
                   class="textarea-affirmation" 
                   name="affirmation" 
                   ><?php echo trim(esc_textarea($affirmation)); ?></textarea>
-        <input type="hidden" id="id" name="id" value="<?php echo $id_for_show ; ?>" />
+        <input type="hidden" id="id" name="id" value="<?php echo esc_attr($id_for_show) ; ?>" />
       </div>
       <div>
         <input type="hidden" id="mode" name="mode" value="" />
       </div>
       <!-- menu/button -->
       <div class="submit">
-        <input class="button-primary button-common submit <?php echo $css_class['add']['display']; ?>" 
+        <input class="button-primary button-common submit <?php echo esc_attr($css_class['add']['display']); ?>" 
               id="insertButton" 
               name="insert" 
               type="submit" 
               value="<?php echo esc_html__('作成', 'insert'); ?>"
         />  
-        <input class="button-primary button-common submit <?php echo $css_class['update']['display']; ?>" 
+        <input class="button-primary button-common submit <?php echo esc_attr($css_class['update']['display']); ?>" 
               id="updateButton" 
               name="update" 
               type="submit" 
-              value="<?php echo esc_html__('編集', 'update'); ?>"/>
-        <input class="button-primary button-common submit <?php echo $css_class['delete']['display']; ?>" 
+              value="<?php echo esc_attr('編集', 'update'); ?>"/>
+        <input class="button-primary button-common submit <?php echo esc_attr($css_class['delete']['display']); ?>" 
               id="deletButton" 
               name="delete" 
               type="submit" 
-              value="<?php echo esc_html__('削除', 'delete'); ?>"/>
+              value="<?php echo esc_attr('削除', 'delete'); ?>"/>
         </div>
         <div>
           <?php if ($show_add_link): ?>
             <span>
-              <a class="button-menu " href="<?php echo esc_html__('?page=my_affirmation&mode=add'); ?>">新しくアファーションを作る</a>
+              <a class="button-menu " href="<?php echo esc_url('?page=my_affirmation&mode=add'); ?>">新しくアファーションを作る</a>
             </span>
           <?php endif; ?>
         </div>
@@ -315,10 +315,10 @@ function my_affirmation_options()
                   $url_show = "?page=my_affirmation&mode=show&id=". $val['id']; ?>
               <tr class="affirmation-border affirmation-table-color-style affirmation-table-tr" >
                 <td class="affirmation-border affirmation-table-td">
-                  <?php echo esc_html__($val['affirmation']); ?>
+                  <?php echo esc_html($val['affirmation']); ?>
                 </td>
                 <td class="affirmation-border affirmation-table-menu">
-                  <a class="button-menu " href="<?php echo esc_html__($url_show); ?>">編集/削除</a>
+                  <a class="button-menu " href="<?php echo esc_url($url_show); ?>">編集/削除</a>
                 </td>
               </tr>
               <?php
