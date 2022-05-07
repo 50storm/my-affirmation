@@ -153,7 +153,7 @@ function my_affirmation_options()
           $sanitized_id = sanitize_text_field($_POST['id']);
           $sanitized_affirmation = sanitize_textarea_field($_POST['affirmation']);
 
-          if (!Validator::notEmptyString($sanitized_id) || !Validator::notEmptyString($sanitized_affirmation)) {
+          if (!Validator::is_number($sanitized_id) || !Validator::notEmptyString($sanitized_affirmation)) {
             // show
             $css_class['add']['display'] = 'display-none';
             $css_class['update']['display'] = 'display-block';
@@ -161,8 +161,10 @@ function my_affirmation_options()
             $show_add_link = true;
             break;
           }
+          // execute updating
           $update_data['id'] = $sanitized_id;
           $update_data['affirmation'] = $sanitized_affirmation;
+          $updated_id = Affimation::update($update_data);
           $affirmation_updated = true;
           $affirmation = $_POST['affirmation'];
           $css_class['add']['display'] = 'display-none';
@@ -180,7 +182,7 @@ function my_affirmation_options()
             break;
           }
           $sanitized_id = sanitize_text_field($_POST['id']);
-          if (!Validator::notEmptyString($sanitized_id)) {
+          if (!Validator::is_number($sanitized_id)) {
             // show
             $css_class['add']['display'] = 'display-none';
             $css_class['update']['display'] = 'display-block';
@@ -188,6 +190,7 @@ function my_affirmation_options()
             $show_add_link = true;
             break;
           }
+          // execute deleting data
           Affimation::delete($sanitized_id);
           $affirmation_deleted = true;
           $css_class['add']['display'] = 'display-block';
@@ -203,23 +206,32 @@ function my_affirmation_options()
         }
         break;
       case 'add':
-        $sanitized_affirmation = sanitize_textarea_field($_POST['affirmation']);
-        if (!isset($_POST['affirmation']) || !Validator::notEmptyString($sanitized_affirmation )) {
-          $message = "アファメーションを入力してください";
+        if (!isset($_POST['affirmation'])) {
           $css_class['add']['display'] = 'display-block';
           $css_class['update']['display'] = 'display-none';
           $css_class['delete']['display'] = 'display-none';
           $show_add_link = false;
-        } else {
-          if (isset($_POST['affirmation']) && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
-            $insert_id = Affimation::insert_affirmation($sanitized_affirmation);
-            $affirmation_saved = true;
-          }
-          $css_class['add']['display'] = 'display-block';
-          $css_class['update']['display'] = 'display-none';
-          $css_class['delete']['display'] = 'display-none';
-          $show_add_link = false;
+          break;
         }
+
+        $sanitized_affirmation = sanitize_textarea_field($_POST['affirmation']);
+        if (!Validator::notEmptyString($sanitized_affirmation)) {
+          $css_class['add']['display'] = 'display-block';
+          $css_class['update']['display'] = 'display-none';
+          $css_class['delete']['display'] = 'display-none';
+          $show_add_link = false;
+          $message = "アファメーションを入力してください";
+          break;
+        }
+        
+        if (isset($_POST['affirmation']) && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
+          $insert_id = Affimation::insert_affirmation($sanitized_affirmation);
+          $affirmation_saved = true;
+        }
+        $css_class['add']['display'] = 'display-block';
+        $css_class['update']['display'] = 'display-none';
+        $css_class['delete']['display'] = 'display-none';
+        $show_add_link = false;
         break;
       default:
         $css_class['add']['display'] = 'display-block';
@@ -257,7 +269,7 @@ function my_affirmation_options()
         <textarea placeholder="アファメーションを書こう"
                   class="textarea-affirmation" 
                   name="affirmation" 
-                  ><?php echo trim(esc_html__($affirmation)); ?></textarea>
+                  ><?php echo trim(esc_textarea($affirmation)); ?></textarea>
         <input type="hidden" id="id" name="id" value="<?php echo $id_for_show ; ?>" />
       </div>
       <div>
