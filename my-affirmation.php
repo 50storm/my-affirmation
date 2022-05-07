@@ -8,8 +8,9 @@
  *
  * @wordpress-plugin
  * Plugin Name: My Affirmation
- * Version: 0.9.0
- * Description: アファメーションを登録するとランダムにダッシュボードに表示されます
+ * Version: 1.0.0
+ * Description: アファメーションを登録するとランダムにダッシュボードに表示されます。
+ * アファメーション設定画面で登録したアファメーションの一覧がみれます。
  * Author: Hiroshi Igarashi
  * Author URI: https://github.com/50Storm
  * Plugin URI: https://github.com/50Storm/myaffirmation
@@ -20,19 +21,22 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'model.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'utility.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+// use MyAffirmationUtility\Debug;
+use MyAffirmationUtility\Validator;
+use MyAffirmationModel\Affimation;
 
 function my_affirmation_enqueue_styles()
 {
     wp_enqueue_style(
       MY_AFFIRMATION_STYLE_NAME_ONLY,
-      CSS_FILENAME_URI,
+      MY_AFFIRMATION_CSS_FILENAME_URI,
       array(),
-		  filemtime(CSS_FILENAME_FULL_PATH)
+		  filemtime(MY_AFFIRMATION_CSS_FILENAME_FULL_PATH)
     );
 
     wp_enqueue_script(
-      PLUGIN_NAME,
-        plugins_url(SCRIPT_FILENAME_FROM_INC, __FILE__)
+      MY_AFFIRMATION_PLUGIN_NAME,
+        plugins_url(MY_AFFIRMATION_SCRIPT_FILENAME_FROM_INC, __FILE__)
     );
 }
 add_action('admin_enqueue_scripts', 'my_affirmation_enqueue_styles');
@@ -103,30 +107,65 @@ add_action('admin_menu', 'affirmation_menu');
  */
 function my_affirmation_options()
 {
+    // Debug::debug_vars("test");
     $affirmation_saved = false;
     $affirmation_updated = false;
     $affirmation_deleted = false;
     $url_show = '';
     $affirmation = '';
+    $message = "";
     $id_for_show = 0;
     $css_class['add']['dispaly'] = '';
     $css_class['update']['dispaly'] = '';
     $css_class['delete']['dispaly'] = '';
     $show_add_link = false;
     $mode = $_GET['mode'] ?? 'add';
-    $action = $_GET['action'] ?? '';
+    $action = $_GET['action'] ?? 'insert';
+    if (!Validator::is_allowed_mode($mode)) {
+      return false;
+    }
+    if (!Validator::is_allowed_action($action)) {
+      return false;
+    }
 
+    
     switch ($mode) {
       case 'show':
+        if (!isset($_GET['id'])) {
+          return false;
+        }
+        if ( !Validator::is_number($_GET['id']) ) {
+          return false;
+        }
         $record_affirmation = Affimation::select_one_affirmation_by_id($_GET['id']);
         $affirmation = $record_affirmation['affirmation'];
         // 編集・削除用のID
         $id_for_show = $record_affirmation['id'];
         if ($action === 'update' && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
           // update
-          $update_data['id'] = $_POST['id'];
-          $update_data['affirmation'] = $_POST['affirmation'];
-          Affimation::update($update_data);
+          if (!isset($_POST['id']) || !$_POST['affirmation']) {
+            // show
+            $css_class['add']['display'] = 'display-none';
+            $css_class['update']['display'] = 'display-block';
+            $css_class['delete']['display'] = 'display-block';
+            $show_add_link = true;
+            break;
+          }
+          $sanitized_id = sanitize_text_field($_POST['id']);
+          $sanitized_affirmation = sanitize_textarea_field($_POST['affirmation']);
+
+          if (!Validator::is_number($sanitized_id) || !Validator::notEmptyString($sanitized_affirmation)) {
+            // show
+            $css_class['add']['display'] = 'display-none';
+            $css_class['update']['display'] = 'display-block';
+            $css_class['delete']['display'] = 'display-block';
+            $show_add_link = true;
+            break;
+          }
+          // execute updating
+          $update_data['id'] = $sanitized_id;
+          $update_data['affirmation'] = $sanitized_affirmation;
+          $updated_id = Affimation::update($update_data);
           $affirmation_updated = true;
           $affirmation = $_POST['affirmation'];
           $css_class['add']['display'] = 'display-none';
@@ -135,7 +174,25 @@ function my_affirmation_options()
           $show_add_link = true;
         } elseif ($action === 'delete' && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
           // delete
-          Affimation::delete($_POST['id']);
+          if (!isset($_POST['id'])) {
+            // show
+            $css_class['add']['display'] = 'display-none';
+            $css_class['update']['display'] = 'display-block';
+            $css_class['delete']['display'] = 'display-block';
+            $show_add_link = true;
+            break;
+          }
+          $sanitized_id = sanitize_text_field($_POST['id']);
+          if (!Validator::is_number($sanitized_id)) {
+            // show
+            $css_class['add']['display'] = 'display-none';
+            $css_class['update']['display'] = 'display-block';
+            $css_class['delete']['display'] = 'display-block';
+            $show_add_link = true;
+            break;
+          }
+          // execute deleting data
+          Affimation::delete($sanitized_id);
           $affirmation_deleted = true;
           $css_class['add']['display'] = 'display-block';
           $css_class['update']['display'] = 'display-none';
@@ -150,9 +207,27 @@ function my_affirmation_options()
         }
         break;
       case 'add':
+        if (!isset($_POST['affirmation'])) {
+          $css_class['add']['display'] = 'display-block';
+          $css_class['update']['display'] = 'display-none';
+          $css_class['delete']['display'] = 'display-none';
+          $show_add_link = false;
+          break;
+        }
+
+        $sanitized_affirmation = sanitize_textarea_field($_POST['affirmation']);
+        if (!Validator::notEmptyString($sanitized_affirmation)) {
+          $css_class['add']['display'] = 'display-block';
+          $css_class['update']['display'] = 'display-none';
+          $css_class['delete']['display'] = 'display-none';
+          $show_add_link = false;
+          $message = "アファメーションを入力してください";
+          break;
+        }
+        
         if (isset($_POST['affirmation']) && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
-            $insert_id = Affimation::insert_affirmation($_POST['affirmation']);
-            $affirmation_saved = true;
+          $insert_id = Affimation::insert_affirmation($sanitized_affirmation);
+          $affirmation_saved = true;
         }
         $css_class['add']['display'] = 'display-block';
         $css_class['update']['display'] = 'display-none';
@@ -169,7 +244,6 @@ function my_affirmation_options()
     // 毎回登録データ全て取得
     $affirmations = Affimation::select_all();
 
-    $message = "";
     if ($affirmation_saved) {
         $message = "作成しました！";
     } elseif ($affirmation_updated) {
@@ -184,7 +258,7 @@ function my_affirmation_options()
    </div>
    <?php if(!empty($message)): ?>
    <div id="message" class="message-area">
-    <span class="message-text"><?php echo $message; ?></span>
+    <span class="message-text"><?php echo esc_html($message); ?></span>
    </div><!-- message -->
    <?php endif; ?>
    <div class="form">
@@ -196,35 +270,35 @@ function my_affirmation_options()
         <textarea placeholder="アファメーションを書こう"
                   class="textarea-affirmation" 
                   name="affirmation" 
-                  ><?php echo trim(esc_html__($affirmation)); ?></textarea>
-        <input type="hidden" id="id" name="id" value="<?php echo $id_for_show ; ?>" />
+                  ><?php echo trim(esc_textarea($affirmation)); ?></textarea>
+        <input type="hidden" id="id" name="id" value="<?php echo esc_attr($id_for_show) ; ?>" />
       </div>
       <div>
         <input type="hidden" id="mode" name="mode" value="" />
       </div>
       <!-- menu/button -->
       <div class="submit">
-        <input class="button-primary button-common submit <?php echo $css_class['add']['display']; ?>" 
+        <input class="button-primary button-common submit <?php echo esc_attr($css_class['add']['display']); ?>" 
               id="insertButton" 
               name="insert" 
               type="submit" 
               value="<?php echo esc_html__('作成', 'insert'); ?>"
         />  
-        <input class="button-primary button-common submit <?php echo $css_class['update']['display']; ?>" 
+        <input class="button-primary button-common submit <?php echo esc_attr($css_class['update']['display']); ?>" 
               id="updateButton" 
               name="update" 
               type="submit" 
-              value="<?php echo esc_html__('編集', 'update'); ?>"/>
-        <input class="button-primary button-common submit <?php echo $css_class['delete']['display']; ?>" 
+              value="<?php echo esc_attr('編集', 'update'); ?>"/>
+        <input class="button-primary button-common submit <?php echo esc_attr($css_class['delete']['display']); ?>" 
               id="deletButton" 
               name="delete" 
               type="submit" 
-              value="<?php echo esc_html__('削除', 'delete'); ?>"/>
+              value="<?php echo esc_attr('削除', 'delete'); ?>"/>
         </div>
         <div>
           <?php if ($show_add_link): ?>
             <span>
-              <a class="button-menu " href="<?php echo esc_html__('?page=my_affirmation&mode=add'); ?>">新しくアファーションを作る</a>
+              <a class="button-menu " href="<?php echo esc_url('?page=my_affirmation&mode=add'); ?>">新しくアファーションを作る</a>
             </span>
           <?php endif; ?>
         </div>
@@ -242,10 +316,10 @@ function my_affirmation_options()
                   $url_show = "?page=my_affirmation&mode=show&id=". $val['id']; ?>
               <tr class="affirmation-border affirmation-table-color-style affirmation-table-tr" >
                 <td class="affirmation-border affirmation-table-td">
-                  <?php echo esc_html__($val['affirmation']); ?>
+                  <?php echo esc_html($val['affirmation']); ?>
                 </td>
                 <td class="affirmation-border affirmation-table-menu">
-                  <a class="button-menu " href="<?php echo esc_html__($url_show); ?>">編集/削除</a>
+                  <a class="button-menu " href="<?php echo esc_url($url_show); ?>">編集/削除</a>
                 </td>
               </tr>
               <?php
