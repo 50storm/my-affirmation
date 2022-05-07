@@ -19,12 +19,12 @@ jobs:
     - name: Composer install
       if: steps.cache.outputs.cache-hit != 'true'
       run: composer install -n --prefer-dist
-    - name: Dry-run php-cs-fixer
+    - name: Execute php-cs-fixer include files
       run: |
-        ./vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --using-cache=no . || true
-    - name: Execute php-cs-fixer
+        ./vendor/bin/php-cs-fixer fix ./inc --using-cache=no
+    - name: Execute php-cs-fixer my-affirmation.php
       run: |
-        ./vendor/bin/php-cs-fixer fix --using-cache=no
+        ./vendor/bin/php-cs-fixer fix ./my-affirmation.php --using-cache=no
     - name: Commit and push
       uses: stefanzweifel/git-auto-commit-action@v4.2.0
       with:
