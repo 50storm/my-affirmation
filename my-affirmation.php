@@ -8,8 +8,9 @@
  *
  * @wordpress-plugin
  * Plugin Name: My Affirmation
- * Version: 0.9.0
- * Description: アファメーションを登録するとランダムにダッシュボードに表示されます
+ * Version: 1.0.0
+ * Description: アファメーションを登録するとランダムにダッシュボードに表示されます。
+ * アファメーション設定画面で登録したアファメーションの一覧がみれます。
  * Author: Hiroshi Igarashi
  * Author URI: https://github.com/50Storm
  * Plugin URI: https://github.com/50Storm/myaffirmation
