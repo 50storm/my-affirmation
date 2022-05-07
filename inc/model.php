@@ -1,5 +1,7 @@
 <?php
+
 namespace MyAffirmationModel;
+
 /**
  * Affimation class
  */
@@ -140,8 +142,8 @@ class Affimation
      */
     public static function delete($id=null)
     {
-      global $wpdb;
-      $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
-      return $wpdb->delete( $table_name , array( 'id' => $id ), array( '%d' ) );
+        global $wpdb;
+        $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
+        return $wpdb->delete($table_name, array( 'id' => $id ), array( '%d' ));
     }
 }
