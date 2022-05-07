@@ -28,14 +28,14 @@ use MyAffirmationModel\Affimation;
 function my_affirmation_enqueue_styles()
 {
     wp_enqueue_style(
-      MY_AFFIRMATION_STYLE_NAME_ONLY,
-      MY_AFFIRMATION_CSS_FILENAME_URI,
-      array(),
-		  filemtime(MY_AFFIRMATION_CSS_FILENAME_FULL_PATH)
+        MY_AFFIRMATION_STYLE_NAME_ONLY,
+        MY_AFFIRMATION_CSS_FILENAME_URI,
+        array(),
+        filemtime(MY_AFFIRMATION_CSS_FILENAME_FULL_PATH)
     );
 
     wp_enqueue_script(
-      MY_AFFIRMATION_PLUGIN_NAME,
+        MY_AFFIRMATION_PLUGIN_NAME,
         plugins_url(MY_AFFIRMATION_SCRIPT_FILENAME_FROM_INC, __FILE__)
     );
 }
@@ -107,10 +107,6 @@ add_action('admin_menu', 'affirmation_menu');
  */
 function my_affirmation_options()
 {
-    // Debug::debug_vars("test");
-    $affirmation_saved = false;
-    $affirmation_updated = false;
-    $affirmation_deleted = false;
     $url_show = '';
     $affirmation = '';
     $message = "";
@@ -122,112 +118,115 @@ function my_affirmation_options()
     $mode = $_GET['mode'] ?? 'add';
     $action = $_GET['action'] ?? 'insert';
     if (!Validator::is_allowed_mode($mode)) {
-      return false;
+        return false;
     }
     if (!Validator::is_allowed_action($action)) {
-      return false;
+        return false;
     }
 
-    
+
     switch ($mode) {
       case 'show':
         if (!isset($_GET['id'])) {
-          return false;
+            return false;
         }
-        if ( !Validator::is_number($_GET['id']) ) {
-          return false;
+        if (!Validator::is_number($_GET['id'])) {
+            return false;
         }
         $record_affirmation = Affimation::select_one_affirmation_by_id($_GET['id']);
         $affirmation = $record_affirmation['affirmation'];
         // 編集・削除用のID
         $id_for_show = $record_affirmation['id'];
         if ($action === 'update' && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
-          // update
-          if (!isset($_POST['id']) || !$_POST['affirmation']) {
-            // show
-            $css_class['add']['display'] = 'display-none';
-            $css_class['update']['display'] = 'display-block';
-            $css_class['delete']['display'] = 'display-block';
-            $show_add_link = true;
-            break;
-          }
-          $sanitized_id = sanitize_text_field($_POST['id']);
-          $sanitized_affirmation = sanitize_textarea_field($_POST['affirmation']);
+            // update
+            if (!isset($_POST['id']) || !$_POST['affirmation']) {
+                // show
+                $css_class['add']['display'] = 'display-none';
+                $css_class['update']['display'] = 'display-block';
+                $css_class['delete']['display'] = 'display-block';
+                $show_add_link = true;
+                break;
+            }
+            $sanitized_id = sanitize_text_field($_POST['id']);
+            $sanitized_affirmation = sanitize_textarea_field($_POST['affirmation']);
 
-          if (!Validator::is_number($sanitized_id) || !Validator::notEmptyString($sanitized_affirmation)) {
-            // show
+            if (!Validator::is_number($sanitized_id) || !Validator::notEmptyString($sanitized_affirmation)) {
+                // show
+                $css_class['add']['display'] = 'display-none';
+                $css_class['update']['display'] = 'display-block';
+                $css_class['delete']['display'] = 'display-block';
+                $show_add_link = true;
+                break;
+            }
+            // execute updating
+            $update_data['id'] = $sanitized_id;
+            $update_data['affirmation'] = $sanitized_affirmation;
+            $updated_id = Affimation::update($update_data);
+            $affirmation_updated = true;
+            $message = "修正しました！";
+            $affirmation = $sanitized_affirmation;
             $css_class['add']['display'] = 'display-none';
             $css_class['update']['display'] = 'display-block';
             $css_class['delete']['display'] = 'display-block';
             $show_add_link = true;
-            break;
-          }
-          // execute updating
-          $update_data['id'] = $sanitized_id;
-          $update_data['affirmation'] = $sanitized_affirmation;
-          $updated_id = Affimation::update($update_data);
-          $affirmation_updated = true;
-          $affirmation = $_POST['affirmation'];
-          $css_class['add']['display'] = 'display-none';
-          $css_class['update']['display'] = 'display-block';
-          $css_class['delete']['display'] = 'display-block';
-          $show_add_link = true;
         } elseif ($action === 'delete' && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
-          // delete
-          if (!isset($_POST['id'])) {
-            // show
-            $css_class['add']['display'] = 'display-none';
-            $css_class['update']['display'] = 'display-block';
-            $css_class['delete']['display'] = 'display-block';
-            $show_add_link = true;
-            break;
-          }
-          $sanitized_id = sanitize_text_field($_POST['id']);
-          if (!Validator::is_number($sanitized_id)) {
-            // show
-            $css_class['add']['display'] = 'display-none';
-            $css_class['update']['display'] = 'display-block';
-            $css_class['delete']['display'] = 'display-block';
-            $show_add_link = true;
-            break;
-          }
-          // execute deleting data
-          Affimation::delete($sanitized_id);
-          $affirmation_deleted = true;
-          $css_class['add']['display'] = 'display-block';
-          $css_class['update']['display'] = 'display-none';
-          $css_class['delete']['display'] = 'display-none';
-          $show_add_link = false;
+            // delete
+            if (!isset($_POST['id'])) {
+                // show
+                $css_class['add']['display'] = 'display-none';
+                $css_class['update']['display'] = 'display-block';
+                $css_class['delete']['display'] = 'display-block';
+                $show_add_link = true;
+                break;
+            }
+            $sanitized_id = sanitize_text_field($_POST['id']);
+            if (!Validator::is_number($sanitized_id)) {
+                // show
+                $css_class['add']['display'] = 'display-none';
+                $css_class['update']['display'] = 'display-block';
+                $css_class['delete']['display'] = 'display-block';
+                $show_add_link = true;
+                break;
+            }
+            // execute deleting data
+            Affimation::delete($sanitized_id);
+            $affirmation_deleted = true;
+            $message = "削除しました！";
+            $css_class['add']['display'] = 'display-block';
+            $css_class['update']['display'] = 'display-none';
+            $css_class['delete']['display'] = 'display-none';
+            $show_add_link = false;
         } else {
-          // show
-          $css_class['add']['display'] = 'display-none';
-          $css_class['update']['display'] = 'display-block';
-          $css_class['delete']['display'] = 'display-block';
-          $show_add_link = true;
+            // show
+            $css_class['add']['display'] = 'display-none';
+            $css_class['update']['display'] = 'display-block';
+            $css_class['delete']['display'] = 'display-block';
+            $show_add_link = true;
         }
         break;
       case 'add':
         if (!isset($_POST['affirmation'])) {
-          $css_class['add']['display'] = 'display-block';
-          $css_class['update']['display'] = 'display-none';
-          $css_class['delete']['display'] = 'display-none';
-          $show_add_link = false;
-          break;
+            $css_class['add']['display'] = 'display-block';
+            $css_class['update']['display'] = 'display-none';
+            $css_class['delete']['display'] = 'display-none';
+            $show_add_link = false;
+            break;
         }
 
         $sanitized_affirmation = sanitize_textarea_field($_POST['affirmation']);
         if (!Validator::notEmptyString($sanitized_affirmation)) {
-          $css_class['add']['display'] = 'display-block';
-          $css_class['update']['display'] = 'display-none';
-          $css_class['delete']['display'] = 'display-none';
-          $show_add_link = false;
-          $message = "アファメーションを入力してください";
-          break;
+            $css_class['add']['display'] = 'display-block';
+            $css_class['update']['display'] = 'display-none';
+            $css_class['delete']['display'] = 'display-none';
+            $show_add_link = false;
+            $message = "アファメーションを入力してください";
+            break;
         }
-        
+
         if (isset($_POST['affirmation']) && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
-          $insert_id = Affimation::insert_affirmation($sanitized_affirmation);
-          $affirmation_saved = true;
+            $insert_id = Affimation::insert_affirmation($sanitized_affirmation);
+            $affirmation_saved = true;
+            $message = "作成しました！";
         }
         $css_class['add']['display'] = 'display-block';
         $css_class['update']['display'] = 'display-none';
@@ -242,21 +241,12 @@ function my_affirmation_options()
         break;
     }
     // 毎回登録データ全て取得
-    $affirmations = Affimation::select_all();
-
-    if ($affirmation_saved) {
-        $message = "作成しました！";
-    } elseif ($affirmation_updated) {
-        $message = "修正しました！";
-    } elseif ($affirmation_deleted) {
-        $message = "削除しました！";
-    }
-?>
+    $affirmations = Affimation::select_all(); ?>
  <div class="affirmation-input-are">
    <div class="header">
     <h1>アファメーションカード</h1>
    </div>
-   <?php if(!empty($message)): ?>
+   <?php if (!empty($message)): ?>
    <div id="message" class="message-area">
     <span class="message-text"><?php echo esc_html($message); ?></span>
    </div><!-- message -->
