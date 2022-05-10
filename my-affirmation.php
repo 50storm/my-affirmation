@@ -55,22 +55,38 @@ add_action('plugins_loaded', 'my_affirmation_load_plugin_textdomain');
 register_activation_hook(__FILE__, array('Affimation', 'activate_create_table'));
 
 /**
+ * show_one_affirmation function
+ *
+ * @param [type] $affirmaton
+ * @param string $id
+ * @param string $class
+ * @return void
+ */
+function show_one_affirmation($affirmaton, $class="my-affirmation-notice") {
+  echo '<div class="my-affirmation-notice-area">';
+  echo '<p id="affirmation" class="' . esc_attr($class) .'">';
+  echo esc_html($affirmaton);
+  echo '</p>';
+  echo '</div>';
+}
+
+/**
  * show affirmation
  *
  * @return void
  */
 function show_affirmation_admin_notice()
 {
-    $my_affirmation = Affimation::select_one_affirmation_randomly();
-    if (!empty($my_affirmation)) {
-        echo '<div class="my-affirmation-notice-area">';
-        echo '<p id="affirmation" class="my-affirmation-notice">';
-        echo esc_html($my_affirmation[0]['affirmation']);
-        echo '</p>';
-        echo '</div>';
-    }
+  $my_affirmation = Affimation::select_one_affirmation_randomly();
+  if (!empty($my_affirmation)) {
+    show_one_affirmation($my_affirmation[0]['affirmation']);
+  }
 }
-add_action('admin_notices', 'show_affirmation_admin_notice');
+if (isset($_GET['page']) && Validator::is_my_affirmation_plugin_page(sanitize_title_for_query($_GET['page']))) {
+  // 表示しない
+} else {
+  add_action('admin_notices', 'show_affirmation_admin_notice');
+}
 
 /**
  * We need some CSS to position the paragraph
@@ -114,17 +130,26 @@ function my_affirmation_options()
     $css_class['add']['dispaly'] = '';
     $css_class['update']['dispaly'] = '';
     $css_class['delete']['dispaly'] = '';
+    $affirmation_saved = false;
+    $affirmation_updated = false;
+    $affirmation_deleted = false;
     $show_add_link = false;
-    $mode = $_GET['mode'] ?? 'add';
-    $action = $_GET['action'] ?? 'insert';
-    if (!Validator::is_allowed_mode($mode)) {
+    $mode = 'add';
+    $action = 'insert';
+    if (isset($_GET['mode'])) {      
+      if (!Validator::is_allowed_mode(sanitize_title_for_query($_GET['mode']))) {
         return false;
+      } else {
+        $mode = sanitize_title_for_query($_GET['mode']);
+      }
     }
-    if (!Validator::is_allowed_action($action)) {
+    if (isset($_GET['action'])) {      
+      if (!Validator::is_allowed_action(($_GET['action']))) {
         return false;
+      } else {
+        $action = sanitize_title_for_query($_GET['action']);
+      }
     }
-
-
     switch ($mode) {
       case 'show':
         if (!isset($_GET['id'])) {
@@ -226,6 +251,7 @@ function my_affirmation_options()
         if (isset($_POST['affirmation']) && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
             $insert_id = Affimation::insert_affirmation($sanitized_affirmation);
             $affirmation_saved = true;
+            $affirmation = $sanitized_affirmation;
             $message = "作成しました！";
         }
         $css_class['add']['display'] = 'display-block';
@@ -250,6 +276,11 @@ function my_affirmation_options()
    <div id="message" class="message-area">
     <span class="message-text"><?php echo esc_html($message); ?></span>
    </div><!-- message -->
+   <?php endif; ?>
+   <?php if($affirmation_saved || $affirmation_updated): ?>
+   <?php 
+    show_one_affirmation($sanitized_affirmation, "my-affirmation-notice-setting-area");
+   ?> 
    <?php endif; ?>
    <div class="form">
     <form id="affirmationform" method="post" action="">
