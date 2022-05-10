@@ -55,16 +55,16 @@ add_action('plugins_loaded', 'my_affirmation_load_plugin_textdomain');
 register_activation_hook(__FILE__, array('Affimation', 'activate_create_table'));
 
 /**
- * show_onw_affirmation function
+ * show_one_affirmation function
  *
  * @param [type] $affirmaton
  * @param string $id
  * @param string $class
  * @return void
  */
-function show_onw_affirmation($affirmaton, $id="affirmation", $class="my-affirmation-notice") {
+function show_one_affirmation($affirmaton, $class="my-affirmation-notice") {
   echo '<div class="my-affirmation-notice-area">';
-  echo '<p id="'. esc_attr($id) .'" class="' . esc_attr($class) .'">';
+  echo '<p id="affirmation" class="' . esc_attr($class) .'">';
   echo esc_html($affirmaton);
   echo '</p>';
   echo '</div>';
@@ -79,7 +79,7 @@ function show_affirmation_admin_notice()
 {
   $my_affirmation = Affimation::select_one_affirmation_randomly();
   if (!empty($my_affirmation)) {
-    show_onw_affirmation($my_affirmation[0]['affirmation']);
+    show_one_affirmation($my_affirmation[0]['affirmation']);
   }
 }
 if (isset($_GET['page']) && Validator::is_my_affirmation_plugin_page(sanitize_title_for_query($_GET['page']))) {
@@ -130,6 +130,9 @@ function my_affirmation_options()
     $css_class['add']['dispaly'] = '';
     $css_class['update']['dispaly'] = '';
     $css_class['delete']['dispaly'] = '';
+    $affirmation_saved = false;
+    $affirmation_updated = false;
+    $affirmation_deleted = false;
     $show_add_link = false;
     $mode = 'add';
     $action = 'insert';
@@ -273,6 +276,11 @@ function my_affirmation_options()
    <div id="message" class="message-area">
     <span class="message-text"><?php echo esc_html($message); ?></span>
    </div><!-- message -->
+   <?php endif; ?>
+   <?php if($affirmation_saved || $affirmation_updated): ?>
+   <?php 
+    show_one_affirmation($sanitized_affirmation, "my-affirmation-notice-setting-area");
+   ?> 
    <?php endif; ?>
    <div class="form">
     <form id="affirmationform" method="post" action="">
