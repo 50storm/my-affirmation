@@ -61,14 +61,14 @@ register_activation_hook(__FILE__, array('Affimation', 'activate_create_table'))
  */
 function show_affirmation_admin_notice()
 {
-    $my_affirmation = Affimation::select_one_affirmation_randomly();
-    if (!empty($my_affirmation)) {
-        echo '<div class="my-affirmation-notice-area">';
-        echo '<p id="affirmation" class="my-affirmation-notice">';
-        echo esc_html($my_affirmation[0]['affirmation']);
-        echo '</p>';
-        echo '</div>';
-    }
+  $my_affirmation = Affimation::select_one_affirmation_randomly();
+  if (!empty($my_affirmation)) {
+      echo '<div class="my-affirmation-notice-area">';
+      echo '<p id="affirmation" class="my-affirmation-notice">';
+      echo esc_html($my_affirmation[0]['affirmation']);
+      echo '</p>';
+      echo '</div>';
+  }
 }
 add_action('admin_notices', 'show_affirmation_admin_notice');
 
@@ -115,16 +115,22 @@ function my_affirmation_options()
     $css_class['update']['dispaly'] = '';
     $css_class['delete']['dispaly'] = '';
     $show_add_link = false;
-    $mode = $_GET['mode'] ?? 'add';
-    $action = $_GET['action'] ?? 'insert';
-    if (!Validator::is_allowed_mode($mode)) {
+    $mode = 'add';
+    $action = 'insert';
+    if (isset($_GET['mode'])) {      
+      if (!Validator::is_allowed_mode(sanitize_title_for_query($_GET['mode']))) {
         return false;
+      } else {
+        $mode = sanitize_title_for_query($_GET['mode']);
+      }
     }
-    if (!Validator::is_allowed_action($action)) {
+    if (isset($_GET['action'])) {      
+      if (!Validator::is_allowed_action(($_GET['action']))) {
         return false;
+      } else {
+        $action = sanitize_title_for_query($_GET['action']);
+      }
     }
-
-
     switch ($mode) {
       case 'show':
         if (!isset($_GET['id'])) {
