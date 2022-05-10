@@ -85,4 +85,22 @@ class Validator
         }
         return false;
     }
+
+    /**
+     * is_my_affirmation_plugin_page function
+     *
+     * @param [type] $page
+     * @return boolean
+     */
+    public static function is_my_affirmation_plugin_page($page)
+    {
+        if (!self::notEmptyString($page)) {
+            return false;
+        }
+        $allowed_modes = ['my_affirmation'];
+        if (!in_array($page, $allowed_modes)) {
+            return false;
+        }
+        return true;
+    }
 }

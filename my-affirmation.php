@@ -55,6 +55,22 @@ add_action('plugins_loaded', 'my_affirmation_load_plugin_textdomain');
 register_activation_hook(__FILE__, array('Affimation', 'activate_create_table'));
 
 /**
+ * show_onw_affirmation function
+ *
+ * @param [type] $affirmaton
+ * @param string $id
+ * @param string $class
+ * @return void
+ */
+function show_onw_affirmation($affirmaton, $id="affirmation", $class="my-affirmation-notice") {
+  echo '<div class="my-affirmation-notice-area">';
+  echo '<p id="'. esc_attr($id) .'" class="' . esc_attr($class) .'">';
+  echo esc_html($affirmaton);
+  echo '</p>';
+  echo '</div>';
+}
+
+/**
  * show affirmation
  *
  * @return void
@@ -63,14 +79,14 @@ function show_affirmation_admin_notice()
 {
   $my_affirmation = Affimation::select_one_affirmation_randomly();
   if (!empty($my_affirmation)) {
-      echo '<div class="my-affirmation-notice-area">';
-      echo '<p id="affirmation" class="my-affirmation-notice">';
-      echo esc_html($my_affirmation[0]['affirmation']);
-      echo '</p>';
-      echo '</div>';
+    show_onw_affirmation($my_affirmation[0]['affirmation']);
   }
 }
-add_action('admin_notices', 'show_affirmation_admin_notice');
+if (isset($_GET['page']) && Validator::is_my_affirmation_plugin_page(sanitize_title_for_query($_GET['page']))) {
+  // 表示しない
+} else {
+  add_action('admin_notices', 'show_affirmation_admin_notice');
+}
 
 /**
  * We need some CSS to position the paragraph
