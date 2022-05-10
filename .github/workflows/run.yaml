@@ -1,0 +1,27 @@
+name: MyAffirmation
+
+on: push
+
+jobs:
+  php-cs-fixer:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache vendor
+      id: cache
+      uses: actions/cache@v1
+      with:
+        path: ./vendor
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+    - name: Composer install
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: composer install -n --prefer-dist
+    - name: Execute php-cs-fixer include files
+      run: |
+        ./vendor/bin/php-cs-fixer fix ./inc --using-cache=no
+    - name: Execute php-cs-fixer my-affirmation.php
+      run: |
+        ./vendor/bin/php-cs-fixer fix ./my-affirmation.php --using-cache=no
