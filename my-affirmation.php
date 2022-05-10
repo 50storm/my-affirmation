@@ -232,6 +232,7 @@ function my_affirmation_options()
         if (isset($_POST['affirmation']) && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
             $insert_id = Affimation::insert_affirmation($sanitized_affirmation);
             $affirmation_saved = true;
+            $affirmation = $sanitized_affirmation;
             $message = "作成しました！";
         }
         $css_class['add']['display'] = 'display-block';
