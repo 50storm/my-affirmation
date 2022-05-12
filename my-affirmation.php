@@ -23,7 +23,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 // use MyAffirmationUtility\Debug;
 use MyAffirmationUtility\Validator;
-use MyAffirmationModel\Affimation;
+use MyAffirmationModel\Affirmation;
 
 function my_affirmation_enqueue_styles()
 {
@@ -61,7 +61,7 @@ function my_affirmation_activate_create_table()
 {        
   global $wpdb;
   $charset_collate = $wpdb->get_charset_collate();
-  $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
+  $table_name = $wpdb->prefix . Affirmation::AFFIRMATION_TABLE_NAME;
   $sql = "CREATE TABLE $table_name (
                 id int(9) NOT NULL AUTO_INCREMENT,
                 affirmation varchar(255) NOT NULL DEFAULT '',
@@ -96,7 +96,7 @@ function show_one_affirmation($affirmaton, $class="my-affirmation-notice") {
  */
 function show_affirmation_admin_notice()
 {
-  $my_affirmation = Affimation::select_one_affirmation_randomly();
+  $my_affirmation = Affirmation::select_one_affirmation_randomly();
   if (!empty($my_affirmation)) {
     show_one_affirmation($my_affirmation[0]['affirmation']);
   }
@@ -177,7 +177,7 @@ function my_affirmation_options()
         if (!Validator::is_number($_GET['id'])) {
             return false;
         }
-        $record_affirmation = Affimation::select_one_affirmation_by_id($_GET['id']);
+        $record_affirmation = Affirmation::select_one_affirmation_by_id($_GET['id']);
         $affirmation = $record_affirmation['affirmation'];
         // 編集・削除用のID
         $id_for_show = $record_affirmation['id'];
@@ -205,7 +205,7 @@ function my_affirmation_options()
             // execute updating
             $update_data['id'] = $sanitized_id;
             $update_data['affirmation'] = $sanitized_affirmation;
-            $updated_id = Affimation::update($update_data);
+            $updated_id = Affirmation::update($update_data);
             $affirmation_updated = true;
             $message = "修正しました！";
             $affirmation = $sanitized_affirmation;
@@ -233,7 +233,7 @@ function my_affirmation_options()
                 break;
             }
             // execute deleting data
-            Affimation::delete($sanitized_id);
+            Affirmation::delete($sanitized_id);
             $affirmation_deleted = true;
             $message = "削除しました！";
             $css_class['add']['display'] = 'display-block';
@@ -268,7 +268,7 @@ function my_affirmation_options()
         }
 
         if (isset($_POST['affirmation']) && check_admin_referer('my_affirmation_options', 'my_affirmation_options_nonce')) {
-            $insert_id = Affimation::insert_affirmation($sanitized_affirmation);
+            $insert_id = Affirmation::insert_affirmation($sanitized_affirmation);
             $affirmation_saved = true;
             $affirmation = $sanitized_affirmation;
             $message = "作成しました！";
@@ -286,7 +286,7 @@ function my_affirmation_options()
         break;
     }
     // 毎回登録データ全て取得
-    $affirmations = Affimation::select_all(); ?>
+    $affirmations = Affirmation::select_all(); ?>
  <div class="affirmation-input-are">
    <div class="header">
     <h1>アファメーションカード</h1>
