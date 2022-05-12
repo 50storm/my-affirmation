@@ -3,9 +3,9 @@
 namespace MyAffirmationModel;
 
 /**
- * Affimation class
+ * Affirmation class
  */
-class Affimation
+class Affirmation
 {
     /**
      * Table Name
@@ -21,7 +21,7 @@ class Affimation
     public static function insert_affirmation($affirmation = "")
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
+        $table_name = $wpdb->prefix . Affirmation::AFFIRMATION_TABLE_NAME;
         $wpdb->insert(
             $table_name,
             array(
@@ -42,7 +42,7 @@ class Affimation
     public static function select_one_affirmation_randomly()
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
+        $table_name = $wpdb->prefix . Affirmation::AFFIRMATION_TABLE_NAME;
         $results = $wpdb->get_results("SELECT * FROM $table_name ORDER BY RAND() LIMIT 1", ARRAY_A);
         return $results;
     }
@@ -56,7 +56,7 @@ class Affimation
     public static function select_one_affirmation_by_id($id=0)
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
+        $table_name = $wpdb->prefix . Affirmation::AFFIRMATION_TABLE_NAME;
         $results = $wpdb->get_results(
             $wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $id),
             ARRAY_A
@@ -72,7 +72,7 @@ class Affimation
     public static function select_all()
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
+        $table_name = $wpdb->prefix . Affirmation::AFFIRMATION_TABLE_NAME;
         $results = $wpdb->get_results("SELECT * FROM $table_name ORDER BY id", ARRAY_A);
         return $results;
     }
@@ -86,7 +86,7 @@ class Affimation
     public static function update($parms = [])
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
+        $table_name = $wpdb->prefix . Affirmation::AFFIRMATION_TABLE_NAME;
         return $wpdb->update(
             $table_name,
             array(
@@ -109,7 +109,7 @@ class Affimation
     public static function delete($id=null)
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
+        $table_name = $wpdb->prefix . Affirmation::AFFIRMATION_TABLE_NAME;
         return $wpdb->delete($table_name, array( 'id' => $id ), array( '%d' ));
     }
 }
