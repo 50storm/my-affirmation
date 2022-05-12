@@ -13,40 +13,6 @@ class Affimation
     public const AFFIRMATION_TABLE_NAME = 'affirmations';
 
     /**
-     * activate_create_table function
-     *
-     * @return (int|false)
-     */
-    public static function activate_create_table()
-    {
-        global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
-        $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
-        $sql = "CREATE TABLE $table_name (
-                id int(9) NOT NULL AUTO_INCREMENT,
-                affirmation varchar(255) NOT NULL DEFAULT '',
-                UNIQUE KEY id (id)
-               ) $charset_collate;";
-        //sqlを実行
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-        // 初期データ
-        $wpdb->query("DELETE FROM $table_name");
-
-        $wpdb->insert(
-            $table_name,
-            array(
-          'id' => 1,
-          'affirmation' => 'アファメーションの例文です。'
-        ),
-            array(
-          '%s',
-          '%s'
-        )
-        );
-    }
-
-    /**
      * insert_affirmation function
      *
      * @param string $affirmation
