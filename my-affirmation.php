@@ -52,7 +52,26 @@ function my_affirmation_load_plugin_textdomain()
 }
 add_action('plugins_loaded', 'my_affirmation_load_plugin_textdomain');
 
-register_activation_hook(__FILE__, array('Affimation', 'activate_create_table'));
+/**
+* activate_create_table function
+*
+* @return (int|false)
+*/
+function my_affirmation_activate_create_table()
+{        
+  global $wpdb;
+  $charset_collate = $wpdb->get_charset_collate();
+  $table_name = $wpdb->prefix . Affimation::AFFIRMATION_TABLE_NAME;
+  $sql = "CREATE TABLE $table_name (
+                id int(9) NOT NULL AUTO_INCREMENT,
+                affirmation varchar(255) NOT NULL DEFAULT '',
+                UNIQUE KEY id (id)
+               ) $charset_collate;";
+  //sqlを実行
+  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+  dbDelta($sql);
+}
+register_activation_hook(__FILE__, 'my_affirmation_activate_create_table');
 
 /**
  * show_one_affirmation function
